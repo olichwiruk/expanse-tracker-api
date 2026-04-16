@@ -1,0 +1,64 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: expense_tracker_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: expense_tracker_redis
+    volumes:
+      - redis_data:/var/lib/redis/data
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .
+    container_name: expense_tracker_api
+    command: bin/rails server -b 0.0.0.0
+    volumes:
+      - .:/rails
+    environment:
+      - RAILS_ENV=development
+      - POSTGRES_PASSWORD=password
+      - DATABASE_URL=postgresql://postgres:password@db:5432/expense_tracker_development
+      - REDIS_URL=redis://redis:6379/1
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  worker:
+    build: .
+    container_name: expense_tracker_worker
+    command: bundle exec sidekiq
+    volumes:
+      - .:/rails
+    environment:
+      - RAILS_ENV=development
+      - POSTGRES_PASSWORD=password
+      - DATABASE_URL=postgresql://postgres:password@db:5432/expense_tracker_development
+      - REDIS_URL=redis://redis:6379/1
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+volumes:
+  postgres_data:
+  redis_data:
