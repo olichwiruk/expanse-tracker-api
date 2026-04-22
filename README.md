@@ -1,24 +1,61 @@
-# README
+# Expanse tracker
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+LLM-agnostic expense tracking engine built with Ruby on Rails, using automated data extraction from receipt images. Features a robust background processing pipeline with Sidekiq, dry-struct contract validation, and an automated self-correction loop for high-accuracy parsing.
 
-Things you may want to cover:
+## How it works
 
-* Ruby version
+0. Client uploads a receipt image via the API.
+0. A background job sends the image to a Vision LLM (Gemini/OpenAI/Claude).
+0. The system validates the LLM's JSON structured output against a strict dry-struct defined contract.
+0. If validation fails, the system automatically triggers a [Reflexion-based](https://arxiv.org/abs/2303.11366) rescue loop, feeding the error report back to the LLM and forcing an explicit reasoning step before its next attempt.
+0. Successfully parsed and validated data is stored in PostgreSQL.
 
-* System dependencies
+## Roadmap
 
-* Configuration
+### Proof-of-concept
 
-* Database creation
+- [x] Configure Rails 7.2 API, Sidekiq, Redis, and PostgreSQL
+- [x] Create `Receipt` model with `photo_base64` column (text) and `status` management (pending, processing, success, failed)
+- [x] Implement `POST /receipts` endpoint to save raw Base64 data and trigger background processing
+- [x] Build `AnalyzeJob` to retrieve `Receipt` records by ID and prepare images for LLM processing
+- [ ] Integrate `RubyLLM` with Gemini for image to JSON extraction using structured output
+- [ ] Define data contracts with `dry-struct` and generate corresponding JSON Schemas
+- [ ] Create `LlmAttempt` model to log full request/response history for observability
+- [ ] Implement a self-correction loop to retry extraction with error feedback if validation fails (max 1 retry)
+- [ ] Persist final extracted data into a JSONB column and update `status` to success
+- [ ] Implement `GET /receipts` endpoint to list records and monitor extraction results
 
-* Database initialization
+### Pre-MVP
 
-* How to run the test suite
+- [ ] Setup RSpec, FactoryBot, and DatabaseCleaner
+- [ ] Configure VCR for mocking LLM API responses
+- [ ] Configure lograge for structured JSON logging
+- [ ] Write unit and integration test
 
-* Services (job queues, cache servers, search engines, etc.)
+### MVP
 
-* Deployment instructions
+- [ ] Migrate storing photos from base64 to ActiveStorage (Local storage)
+- [ ] Implement authentication using Devise
+- [ ] Establish multi-tenant architecture (`User` -> `Household` -> `Receipt`)
+- [ ] Implement Bring-your-own-key with `LlmCredentials` scoped to `User`/`Household` for customizable API keys
+- [ ] Add multi-provider support with Adapters for OpenAI and Anthropic
+- [ ] Scope `GET /receipts` strictly to `current_user.household`
+- [ ] Develop mobile-friendly frontend using React and Tailwind CSS (with ActionCable for real-time updates)
+- [ ] Build Human-in-the-loop UI with manual correction interface at `GET /receipts/:id`
+- [ ] Implement change tracking system (diffing LLM output vs. human edits) for model evaluation
+- [ ] Build security guardrail (secondary LLM request) to detect Prompt Injection and non-receipt images
+- [ ] Implement partial ban logic. Block `POST /receipts` for 24h or permanently based on guardrail flags
 
-* ...
+### Future Improvements
+
+- [ ] Setup `Household` invitation system and membership management
+- [ ] Add pagination for receipt lists to optimize performance
+- [ ] Implement automated thumbnail generation for receipt previews
+- [ ] Develop advanced expense reports (by category, date range, merchant, etc.)
+- [ ] Integrate Global Product Classification (GPC) for standardized item categorization
+- [ ] Migrate file storage to Amazon S3
+- [ ] Implement image hash-based caching to prevent redundant LLM processing
+- [ ] Add image pre-processing pipeline (grayscale, resizing, noise reduction)
+- [ ] Implement full-text search for items and merchants
+- [ ] Support batch uploads for multiple receipt processing
+- [ ] Develop native mobile applications using React Native
