@@ -2,11 +2,7 @@
 
 class ReceiptsController < ApplicationController
   def create
-    errors = validate_upload_params
-
-    return render json: { errors: errors }, status: :bad_request if errors.any?
-
-    status, result = Receipts::CreateService.call(params)
+    status, result = Receipts::CreateService.call(create_params)
 
     case status
     when :ok
@@ -16,15 +12,7 @@ class ReceiptsController < ApplicationController
     end
   end
 
-  private def validate_upload_params
-    errors = []
-    name = params[:name]
-
-    errors << "Name is missing" if name.blank?
-    errors << "Name must be a string" unless name.is_a? String
-    errors << "Name is too short" if name.to_s.length < 3
-    errors << "Name is too long" if name.to_s.length > 39
-
-    errors
+  private def create_params
+    params.permit(:photo_base64)
   end
 end

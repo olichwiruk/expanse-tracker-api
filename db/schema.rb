@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_19_190100) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_22_195214) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "receipts", force: :cascade do |t|
-    t.string "name"
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "photo_base64"
   end
 end

@@ -3,7 +3,7 @@
 module Receipts
   class CreateService
     def self.call(params)
-      receipt = Receipt.new(name: params[:name])
+      receipt = Receipt.new(params)
 
       if receipt.save
         Receipts::AnalyzeJob.perform_later(receipt.id)
