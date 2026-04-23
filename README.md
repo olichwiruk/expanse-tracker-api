@@ -1,10 +1,10 @@
 <p><a target="_blank" href="https://app.eraser.io/workspace/e8OVReUtHGpt7FF7fif9" id="edit-in-eraser-github-link"><img alt="Edit in Eraser" src="https://firebasestorage.googleapis.com/v0/b/second-petal-295822.appspot.com/o/images%2Fgithub%2FOpen%20in%20Eraser.svg?alt=media&amp;token=968381c8-a7e7-472a-8ed6-4a6626da5501"></a></p>
 
-# Expanse tracker
+# Expense tracker
 LLM-agnostic expense tracking engine built with Ruby on Rails, using automated data extraction from receipt images. Features a robust background processing pipeline with Sidekiq, dry-struct contract validation, and an automated self-correction loop for high-accuracy parsing.
 
 ## Architecture
-![View on Eraser](/.eraser/e8OVReUtHGpt7FF7fif9___LQGxdMVPuaVCCeDK7pQdnsPtYqb2___---diagram---U7MFvgGc_yH1j3ev97JXu---id---1PpAgb1rbQLr8KhjGpbX3.png "View on Eraser")
+![View on Eraser](/.eraser/e8OVReUtHGpt7FF7fif9___LQGxdMVPuaVCCeDK7pQdnsPtYqb2___---diagram---NCY8kS98nJz9Qb0iFdOA3---id---1PpAgb1rbQLr8KhjGpbX3.png "View on Eraser")
 
 
 
