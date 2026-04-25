@@ -22,21 +22,21 @@ _Architecture visualized using _[﻿C4 model](https://c4model.com/)_ methodology
 - [x] Create `Receipt`  model with `photo_base64`  column (text) and `status`  management (pending, processing, success, failed)
 - [x] Implement `POST /receipts`  endpoint to save raw Base64 data and trigger background processing
 - [x] Build `AnalyzeJob`  to retrieve `Receipt`  records by ID and prepare images for LLM processing
-- [ ] Integrate `RubyLLM`  with Gemini for image to JSON extraction using structured output
+- [ ] Migrate storing photos from base64 to ActiveStorage (Local storage)
+- [ ] Integrate `RubyLLM`  for image to JSON extraction using structured output
+- [ ] Persist final extracted data into a JSONB column and update `status`  to success
 - [ ] Define data contracts with `dry-struct`  and generate corresponding JSON Schemas
 - [ ] Create `LlmAttempt`  model to log full request/response history for observability
 - [ ] Implement a self-correction loop to retry extraction with error feedback if validation fails (max 1 retry)
-- [ ] Persist final extracted data into a JSONB column and update `status`  to success
 - [ ] Implement `GET /receipts`  endpoint to list records and monitor extraction results
 ### Pre-MVP
 - [ ] Setup RSpec, FactoryBot, and DatabaseCleaner
 - [ ] Configure VCR for mocking LLM API responses
+- [ ] Write unit and integration tests
 - [ ] Configure lograge for structured JSON logging
-- [ ] Write unit and integration test
 ### MVP
-- [ ] Migrate storing photos from base64 to ActiveStorage (Local storage)
 - [ ] Implement authentication using Devise
-- [ ] Establish multi-tenant architecture (`User`  -> `Household`  -> `Receipt` )
+- [ ] Establish multi-tenant architecture (`User`  -> `Household`  -> `Receipt`)
 - [ ] Implement Bring-your-own-key with `LlmCredentials`  scoped to `User` /`Household`  for customizable API keys
 - [ ] Add multi-provider support with Adapters for OpenAI and Anthropic
 - [ ] Scope `GET /receipts`  strictly to `current_user.household` 
