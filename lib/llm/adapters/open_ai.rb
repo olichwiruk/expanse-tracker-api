@@ -24,7 +24,7 @@ module Llm
             with: image
           )
 
-        schema.new(response.content)
+        response.content
       end
     end
   end

@@ -6,7 +6,9 @@ module Receipts
       receipt.processing!
 
       llm_adapter = Llm::Adapters::OpenAi.new
-      extracted_data = llm_adapter.extract_structured_data(image: receipt.photo)
+      llm_output = llm_adapter.extract_structured_data(image: receipt.photo)
+
+      extracted_data = Receipts::ExtractedData.new(llm_output)
 
       receipt.llm_payload = extracted_data.to_h
       receipt.status = :success
