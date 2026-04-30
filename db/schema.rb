@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_04_25_153500) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_29_191025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -42,6 +42,24 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_25_153500) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "llm_attempts", force: :cascade do |t|
+    t.bigint "receipt_id", null: false
+    t.string "vendor"
+    t.string "llm_model_name"
+    t.string "status"
+    t.jsonb "request_payload", default: {}, null: false
+    t.jsonb "response_payload", default: {}, null: false
+    t.text "error_message"
+    t.integer "duration_ms"
+    t.integer "input_tokens"
+    t.integer "output_tokens"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receipt_id"], name: "index_llm_attempts_on_receipt_id"
+    t.index ["request_payload"], name: "index_llm_attempts_on_request_payload", using: :gin
+    t.index ["response_payload"], name: "index_llm_attempts_on_response_payload", using: :gin
+  end
+
   create_table "receipts", force: :cascade do |t|
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
@@ -52,4 +70,5 @@ ActiveRecord::Schema[7.2].define(version: 2026_04_25_153500) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "llm_attempts", "receipts"
 end
