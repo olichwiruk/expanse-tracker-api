@@ -127,6 +127,11 @@ GEM
     erb (6.0.3)
     erubi (1.13.1)
     event_stream_parser (1.0.0)
+    factory_bot (6.5.6)
+      activesupport (>= 6.1.0)
+    factory_bot_rails (6.5.1)
+      factory_bot (~> 6.5)
+      railties (>= 6.1.0)
     faraday (2.14.1)
       faraday-net_http (>= 2.0, < 3.5)
       json
@@ -376,6 +381,7 @@ DEPENDENCIES
   bullet
   debug
   dry-struct
+  factory_bot_rails
   lograge
   pg (~> 1.1)
   puma (>= 5.0)

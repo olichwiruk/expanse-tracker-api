@@ -3,17 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Receipts::AnalyzeService do
-  let(:receipt) do
-    Receipt.new(status: :pending).tap do |r|
-      r.photo.attach(
-        io: StringIO.new('fake'),
-        filename: 'fake.jpg',
-        content_type: 'image/jpeg'
-      )
-
-      r.save!
-    end
-  end
+  let(:receipt) { create(:receipt, :with_photo) }
 
   let(:fake_llm_response) do
     Llm::Response.new(
