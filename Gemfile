@@ -45,6 +45,11 @@ group :development, :test do
   gem "factory_bot_rails"
 end
 
+group :test do
+  gem "simplecov", require: false
+  gem "simplecov-lcov", require: false
+end
+
 group :development do
   gem "bullet"
   gem "rubocop-rails", require: false
