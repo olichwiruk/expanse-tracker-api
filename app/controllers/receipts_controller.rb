@@ -12,7 +12,7 @@ class ReceiptsController < ApplicationController
     in Success(receipt)
       render json: { success: true, receiptId: receipt.id }, status: :created
     in Failure(receipt)
-      render json: { errors: receipt.errors.full_messages }, status: :unprocessable_content
+      render_errors(receipt.errors, :unprocessable_content)
     end
   end
 
