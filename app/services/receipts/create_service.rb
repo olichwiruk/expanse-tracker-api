@@ -1,16 +1,19 @@
 # frozen_string_literal: true
 
+require "dry/monads"
+
 module Receipts
   class CreateService
+    extend Dry::Monads[:result]
+
     def self.call(params)
       receipt = Receipt.new(params)
 
       if receipt.save
         Receipts::AnalyzeJob.perform_later(receipt.id)
-
-        [ :ok, receipt ]
+        Success(receipt)
       else
-        [ :error, receipt.errors.full_messages ]
+        Failure(receipt)
       end
     end
   end
