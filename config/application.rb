@@ -44,6 +44,7 @@ module ExpenseTracker
     config.api_only = true
 
     config.active_job.queue_adapter = :sidekiq
+    config.active_job.enqueue_after_transaction_commit = :always
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore, key: "_expense_tracker_session"
